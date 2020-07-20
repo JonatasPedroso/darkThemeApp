@@ -1,26 +1,46 @@
 import React from 'react';
-import {Alert} from 'react-native';
+import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
 import {useTheme} from '@react-navigation/native';
+import {connect} from 'react-redux';
+import {setText} from '../../store/actions/auth/setTexts';
+import SyncContainer from '../../components/SyncContainer';
 
-import SincContainer from '../../components/SincContainer';
-
-export default function Home() {
+const Home = ({text, setText}) => {
     const {colors} = useTheme();
 
     return (
-        <SincContainer>
-            <CustomText colors={colors}>
-                Teste de Aplicação com React Navigation 5
-            </CustomText>
+        <SyncContainer>
+            <CustomText colors={colors}>{text}</CustomText>
+
             <CustomButton
-                title="Press Me"
+                title="Simple Button pressed"
                 colors={colors}
-                onPress={() => Alert.alert('Simple Button pressed')}
+                onPress={() => {
+                    setText('Teste de Aplicação com React Navigation 5');
+                }}
             />
-        </SincContainer>
+        </SyncContainer>
     );
-}
+};
+
+Home.propTypes = {
+    text: PropTypes.string,
+    setText: PropTypes.func.isRequired,
+};
+
+Home.defaultProps = {
+    text: '',
+};
+
+// Connect with redux
+const mapStateToProps = ({auth: {text}}) => ({text});
+
+const mapDispatchToProps = {
+    setText,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 const CustomText = styled.Text`
     color: ${(props) => props.colors.textPrimary};
